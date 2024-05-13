@@ -1,0 +1,32 @@
+{% load static %}
+
+<html>
+  <head>
+    <title>Time Table Generator</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}" />
+    <!-- Add Bootstrap CSS -->
+    <link
+
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Add Bootstrap JavaScript (optional, for certain components like dropdowns, modals, etc.) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  </head>
+  <body>
+    {% if messages %}
+    <ul>
+      {% for message in messages %}
+      <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %} {% block content %} {% endblock %} 
+    {% comment %} {% if user.is_authenticated%}
+    <p>
+      You are logged in as {{ request.user }}. Click here to
+      <a href="{% url 'logout' %}">log out</a>
+    </p>
+    {% endif %} {% endcomment %}
+  </body>
+</html>

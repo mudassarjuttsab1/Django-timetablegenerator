@@ -1,4 +1,4 @@
-from .models import Department,Teacher
+from .models import Department,Teacher,Course
 
 from django import forms
 
@@ -9,7 +9,31 @@ class DepartmentForm(forms.ModelForm):
         fields = ['name']
 
 
-class TeacherForm(forms.Form):
+class TeacherForm(forms.ModelForm):
 
-        name = forms.CharField(label='Teacher Name')
-        department_id = forms.ModelChoiceField(queryset=Department.objects.all(), label='Department')
+
+    class Meta:
+        model = Teacher
+
+        fields = ['name','department']
+
+
+class CourseForm(forms.ModelForm):
+
+    class Meta:
+        model = Course
+
+        fields = ['name', 'department', 'teachers']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['teachers'].queryset = Teacher.objects.none()
+        
+        if 'department' in self.data:
+            try:
+                department_id = int(self.data.get('department'))
+                self.fields['teachers'].queryset = Teacher.objects.filter(department_id=department_id).order_by('name')
+            except (ValueError, TypeError):
+                pass  # Invalid input from the client; ignore and fallback to empty Teacher queryset
+        elif self.instance.pk:
+            self.fields['teachers'].queryset = self.instance.department.teacher_set.all().order_by('name')

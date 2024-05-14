@@ -5,26 +5,30 @@
     <h5 class="card-title text-center mb-4">Create Teacher</h5>
     <p class="card-text text-center text-muted">{{ message }}</p>
     <!-- Form -->
-    <form method="post" enctype="multipart/form-data">
-      {% csrf_token %}
-      <div class="mb-3">
-        <div class="container">
-          <div class="row">
-            <div class="col-md-12">
-              {{ form.name.label_tag }}
-              {{ form.name }}
+            <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+                    <div class="mb-3">
+                                    <div class="container">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                        <label for="name" class="form-label mb-2">Teacher Name:</label>
+                                        </div>
+                                        <div class="col-md-12">
+                                        <input type="text" class="form-control" id="id_name" name="name" placeholder="Enter department name">
+                                        </div>
+                                        <div class="col-md-12">
+                                            <select name="department">
+                                                {% for department in departments%}
+                                                <option value="{{ department.id}}">{{ department.name }}</option>
+                                                {%endfor%}
+                                            </select>
+                                    </div>
+                                    </div>
+                    </div>
+            <div class="d-grid mt-4">
+                <button type="submit" class="btn btn-primary btn-lg">Submit</button>
             </div>
-            <div class="col-md-12">
-              {{ form.department.label_tag }}
-              {{ form.department_id }}
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="d-grid mt-4">
-        <button type="submit" class="btn btn-primary btn-lg">Submit</button>
-      </div>
-    </form>
+            </form>
   </div>
 </div>
 {% endblock content %}

@@ -1,42 +1,41 @@
 {% extends 'base.html' %} 
+{% load static %}
+
 {% block content %}
 <div class="container-fluid vh-100 d-flex justify-content-center align-items-center">
   <div class="card p-4 border shadow-lg">
     <h5 class="card-title text-center mb-4">Create Course</h5>
     <p class="card-text text-center text-muted">{{ message }}</p>
     <!-- Form -->
-            <form method="post" enctype="multipart/form-data" id="courseForm" data-courses-url="{% url 'course' %}>
-            {% csrf_token %}
-                    <div class="mb-3">
-                                    <div class="container">
-                                    <div class="row">
-                                        {{form.as_table}}
-
-                                    </div>
-                    </div>
-            <div class="d-grid mt-4">
-                <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+    <form method="post" enctype="multipart/form-data" id="courseForm" data-teachers-url="{% url 'load_teachers' %}">
+      {% csrf_token %}
+      <div class="mb-3">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12">
+              <label for="name" class="form-label mb-2">Course Name:</label>
             </div>
-            </form>
+            <div class="col-md-12">
+              <input type="text" class="form-control" id="id_name" name="name" placeholder="Enter Course name">
+            </div>
+
+            <div class="col-md-12">
+              <label for="name" class="form-label mb-2">Teachers:</label>
+            </div>
+            <div class="col-md-12">
+              <select name="teacher">
+                {% for teacher in teachers%}
+                   <option value="{{ teacher.id }}">{{ teacher.name|capfirst }}</option>
+                {%endfor%}
+              </select>
+           </div>
+          </div>
+        </div>
+      </div>
+      <div class="d-grid mt-4">
+        <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+      </div>
+    </form>
   </div>
 </div>
 {% endblock content %}
-
-
-<script>
-    $("#id_department").change(function () {
-      var url = $("#courseForm").attr("data-courses-url");  // get the url of the `load_cities` view
-      var departmentId = $(this).val();  // get the selected country ID from the HTML input
-
-      $.ajax({                       // initialize an AJAX request
-        url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
-        data: {
-          'department': departmentId       // add the country id to the GET parameters
-        },
-        success: function (data) {   // `data` is the return of the `load_cities` view function
-          $("#id_teachers").html(data);  // replace the contents of the city input with the data that came from the server
-        }
-      });
-
-    });
-</script>

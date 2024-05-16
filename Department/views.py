@@ -1,8 +1,9 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.views.generic import TemplateView
 
 from . import forms
 from .models import Department,Teacher
+from . import models
 # Create your views here.
 
 
@@ -34,6 +35,12 @@ class DepartmentListView(TemplateView):
          print(departments)
          return render(request,'department/index.html',{'departments': departments})
 
+class DepartmentShowView(TemplateView):
+
+    def get(self,request,id):
+        department = get_object_or_404(Department,id=id)
+        return render(request,'department/show.html',{'department': department})
+    
 
 class TeacherView(TemplateView):
     template_name = 'teacher/new_teacher.html'
@@ -58,6 +65,7 @@ class TeacherView(TemplateView):
 class TeacherListView(TemplateView):
     template_name = "teacher/index.html"
     def get(self,request):
+       
         teachers = Teacher.objects.all()
         return render(request,self.template_name,{'teachers': teachers})
     
@@ -65,10 +73,40 @@ class TeacherListView(TemplateView):
 class CourseView(TemplateView):
     template_name = 'course/new_course.html'
 
-    def get(self,request):
-        departments = Department.objects.all()
-        form = forms.CourseForm()
-        return render(request,self.template_name,{'form': form})
+    def get(self,request,department_id):
+        department = Department.objects.get(id=department_id)
+        teachers = Teacher.objects.filter(department_id=department_id)
+        form = forms.CourseForm(initial={'department': department_id})
+        context ={'department': department, 'teachers': teachers, 'form': form}
+        return render(request,self.template_name,context)
     
-    def post(self,request):
-        breakpoint()
+    def post(self, request, department_id):
+        department = get_object_or_404(Department, id=department_id)
+        teachers = Teacher.objects.filter(department_id=department_id)
+        form = forms.CourseForm(request.POST)
+
+        if form.is_valid():
+            course = form.save(commit=False)
+            course.department = department
+            course.save()
+            form.save_m2m()  # Save many-to-many relationships
+
+            return redirect('courses', department_id=department_id)  # Redirect after successful form submission
+        else:
+            print(form.errors)  # Print form errors to console for debugging
+
+        context = {'department': department, 'teachers': teachers, 'form': form}
+        return render(request, self.template_name, context)
+
+class CourseListView(TeacherView):
+    template_name = 'course/index.html'
+    def get(self,request,department_id):
+
+        courses = models.Course.objects.filter(department_id=department_id)
+        context = {'courses': courses,'department_id': department_id}
+        return render(request,self.template_name,context)
+def load_teachers(request):
+    breakpoint()
+    department_id = request.GET.get('department_id')
+    teachers = Teacher.objects.filter(department_id=department_id).order_by('name')
+    return render(request, 'course/load_teachers.html', {'teachers': teachers})

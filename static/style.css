@@ -6,3 +6,12 @@
     border-radius: 5px;
     cursor: pointer;
 }
+
+
+.ui.selection.dropdown {
+    min-width: 100%;
+  }
+  
+  .ui.selection.dropdown .menu {
+    min-width: 200px;
+  }

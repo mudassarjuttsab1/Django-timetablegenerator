@@ -25,19 +25,20 @@
         {% for department in departments %}
           <tr>
             <td scope="row">{{ forloop.counter }}</td>
-            <td>{{ department.name }}</td>
-            {% comment %} <td>
-              <div class="ui selection dropdown">
-                <i class="dropdown icon"></i>
-                <div class="default text fs-5 ms-5">Teachers</div>
-                <div class="menu scrolling">
-                  {% for teacher in department.teachers %}
-                    <div class="item" data-value="{{ teacher.id }}">{{ teacher.name|capfirst }}</div>
-                  {% endfor %}
-                </div>
+            <td><a href="{% url 'department_show' department.id %}">{{ department.name }}</a></td>
+            <td>
+              <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                  Teachers
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                  {% for teacher in department.teacher_set.all%}
+                  <li class="dropdown-item">{{teacher.name|capfirst}}</li>
+                  {%endfor%}
+                </ul>
               </div>
             </td>
-            <td>
+            {% comment %} <td>
               <div class="ui selection dropdown">
                 <i class="dropdown icon"></i>
                 <div class="default text fs-5 ms-5">Courses</div>

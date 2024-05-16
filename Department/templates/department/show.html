@@ -1,0 +1,10 @@
+<h1>
+    {{department.name}}
+</h1>
+<a href="{%url 'course' department.id %}" class="btn btn primary"> Add course</a>
+
+{% for teacher in department.teacher_set.all%}
+
+  <h1>{{teacher.name}}
+
+    {%endfor%}
